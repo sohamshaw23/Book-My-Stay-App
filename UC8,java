@@ -1,0 +1,116 @@
+import java.util.*;
+
+/**
+ * UseCase8BookingHistoryReport
+ * 
+ * Demonstrates booking history tracking and reporting.
+ * Stores confirmed reservations and generates reports.
+ * 
+ * @author YourName
+ * @version 8.0
+ */
+public class UseCase8BookingHistoryReport {
+
+    public static void main(String[] args) {
+
+        // Initialize Booking History
+        BookingHistory history = new BookingHistory();
+
+        // Simulate confirmed bookings
+        history.addReservation(new Reservation("RES-101", "Alice", "Single Room"));
+        history.addReservation(new Reservation("RES-102", "Bob", "Double Room"));
+        history.addReservation(new Reservation("RES-103", "Charlie", "Suite Room"));
+
+        // Admin requests reports
+        BookingReportService reportService = new BookingReportService();
+
+        System.out.println("========= Booking History =========");
+        reportService.displayAllBookings(history);
+
+        System.out.println("\n========= Booking Summary =========");
+        reportService.generateSummary(history);
+    }
+}
+
+/**
+ * Reservation class
+ * Represents a confirmed booking
+ */
+class Reservation {
+
+    private String reservationId;
+    private String guestName;
+    private String roomType;
+
+    public Reservation(String reservationId, String guestName, String roomType) {
+        this.reservationId = reservationId;
+        this.guestName = guestName;
+        this.roomType = roomType;
+    }
+
+    public String getReservationId() {
+        return reservationId;
+    }
+
+    public String getGuestName() {
+        return guestName;
+    }
+
+    public String getRoomType() {
+        return roomType;
+    }
+}
+
+/**
+ * BookingHistory class
+ * Stores confirmed reservations
+ */
+class BookingHistory {
+
+    private List<Reservation> reservations;
+
+    public BookingHistory() {
+        reservations = new ArrayList<>();
+    }
+
+    // Add reservation to history
+    public void addReservation(Reservation reservation) {
+        reservations.add(reservation);
+    }
+
+    // Retrieve all reservations
+    public List<Reservation> getReservations() {
+        return reservations;
+    }
+}
+
+/**
+ * BookingReportService class
+ * Generates reports from booking history
+ */
+class BookingReportService {
+
+    // Display all bookings
+    public void displayAllBookings(BookingHistory history) {
+        for (Reservation res : history.getReservations()) {
+            System.out.println("Reservation ID: " + res.getReservationId()
+                    + " | Guest: " + res.getGuestName()
+                    + " | Room Type: " + res.getRoomType());
+        }
+    }
+
+    // Generate summary report
+    public void generateSummary(BookingHistory history) {
+
+        Map<String, Integer> summary = new HashMap<>();
+
+        for (Reservation res : history.getReservations()) {
+            String roomType = res.getRoomType();
+            summary.put(roomType, summary.getOrDefault(roomType, 0) + 1);
+        }
+
+        for (Map.Entry<String, Integer> entry : summary.entrySet()) {
+            System.out.println(entry.getKey() + " -> Total Bookings: " + entry.getValue());
+        }
+    }
+}

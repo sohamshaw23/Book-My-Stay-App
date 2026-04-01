@@ -1,0 +1,146 @@
+import java.util.*;
+
+/**
+ * UseCase4RoomSearch
+ * 
+ * Demonstrates read-only room search functionality.
+ * Filters and displays only available rooms without modifying inventory.
+ * 
+ * @author YourName
+ * @version 4.0
+ */
+public class UseCase4RoomSearch {
+
+    public static void main(String[] args) {
+
+        // Initialize inventory
+        RoomInventory inventory = new RoomInventory();
+        inventory.addRoomType("Single Room", 5);
+        inventory.addRoomType("Double Room", 0); // Not available
+        inventory.addRoomType("Suite Room", 2);
+
+        // Initialize room domain objects
+        Map<String, Room> roomCatalog = new HashMap<>();
+        roomCatalog.put("Single Room", new SingleRoom(1, 200, 1000));
+        roomCatalog.put("Double Room", new DoubleRoom(2, 350, 1800));
+        roomCatalog.put("Suite Room", new SuiteRoom(3, 500, 3000));
+
+        // Perform search
+        RoomSearchService searchService = new RoomSearchService();
+        searchService.searchAvailableRooms(inventory, roomCatalog);
+    }
+}
+
+/**
+ * RoomSearchService
+ * Handles read-only search operations
+ */
+class RoomSearchService {
+
+    public void searchAvailableRooms(RoomInventory inventory, Map<String, Room> roomCatalog) {
+
+        System.out.println("========= Available Rooms =========");
+
+        for (String roomType : roomCatalog.keySet()) {
+
+            int available = inventory.getAvailability(roomType);
+
+            // Filter unavailable rooms
+            if (available > 0) {
+                Room room = roomCatalog.get(roomType);
+                room.displayDetails();
+                System.out.println("Available Rooms: " + available);
+                System.out.println("----------------------------------");
+            }
+        }
+    }
+}
+
+/**
+ * RoomInventory (Same as Use Case 3 - Read Only Usage Here)
+ */
+class RoomInventory {
+
+    private Map<String, Integer> inventory;
+
+    public RoomInventory() {
+        inventory = new HashMap<>();
+    }
+
+    public void addRoomType(String roomType, int count) {
+        inventory.put(roomType, count);
+    }
+
+    public int getAvailability(String roomType) {
+        return inventory.getOrDefault(roomType, 0);
+    }
+}
+
+/**
+ * Abstract Room Class
+ */
+abstract class Room {
+
+    protected int beds;
+    protected int size;
+    protected double price;
+
+    public Room(int beds, int size, double price) {
+        this.beds = beds;
+        this.size = size;
+        this.price = price;
+    }
+
+    public abstract void displayDetails();
+}
+
+/**
+ * Single Room
+ */
+class SingleRoom extends Room {
+
+    public SingleRoom(int beds, int size, double price) {
+        super(beds, size, price);
+    }
+
+    public void displayDetails() {
+        System.out.println("Room Type: Single Room");
+        System.out.println("Beds: " + beds);
+        System.out.println("Size: " + size + " sq ft");
+        System.out.println("Price: ₹" + price);
+    }
+}
+
+/**
+ * Double Room
+ */
+class DoubleRoom extends Room {
+
+    public DoubleRoom(int beds, int size, double price) {
+        super(beds, size, price);
+    }
+
+    public void displayDetails() {
+        System.out.println("Room Type: Double Room");
+        System.out.println("Beds: " + beds);
+        System.out.println("Size: " + size + " sq ft");
+        System.out.println("Price: ₹" + price);
+    }
+}
+
+/**
+ * Suite Room
+ */
+class SuiteRoom extends Room {
+
+    public SuiteRoom(int beds, int size, double price) {
+        super(beds, size, price);
+    }
+
+    public void displayDetails() {
+        System.out.println("Room Type: Suite Room");
+        System.out.println("Beds: " + beds);
+        System.out.println("Size: " + size + " sq ft");
+        System.out.println("Price: ₹" + price);
+    }
+}
